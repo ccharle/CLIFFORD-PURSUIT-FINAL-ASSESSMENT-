@@ -3,7 +3,7 @@ package org.pursuit.cliffordcharles_finalassessment.model;
 import java.util.ArrayList;
 import java.util.List;
 
-    public class Locations {
+    public class Locations implements Comparable<Locations>{
 
         private String country;
         private String name;
@@ -33,6 +33,12 @@ import java.util.List;
             this.coord = coord;
 
 
+        }
+
+        @Override
+        public int compareTo(Locations locale) {
+            int location = this.getName().toLowerCase().compareTo(locale.getName().toLowerCase());
+            return location;
         }
 
         public class Coordinates {
@@ -70,4 +76,8 @@ import java.util.List;
 
 
         }
+
+
+
+
     }

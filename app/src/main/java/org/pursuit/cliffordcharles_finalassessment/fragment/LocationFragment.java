@@ -22,6 +22,7 @@ import org.pursuit.cliffordcharles_finalassessment.network.LocationService;
 import org.pursuit.cliffordcharles_finalassessment.network.RetrofitSingleton;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -147,6 +148,7 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
                     public void onResponse(Call<List<Locations>> call, Response<List<Locations>> response) {
                         Log.d(TAG, "OnResponse" + response.body().get(0).getCountry());
                         locationsArrayList.addAll(response.body());
+                        Collections.sort(locationsArrayList);
                         locationAdapter = new LocationAdapter(locationsArrayList);
                         locationRecyclerView.setAdapter(locationAdapter);
 
@@ -156,7 +158,7 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
                     @Override
                     public void onFailure(Call<List<Locations>> call, Throwable t) {
                         Log.d(TAG, "OnFailure" + t.getMessage());
-                        Toast.makeText(getActivity(),"Connection Error",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
 
                     }
                 });
