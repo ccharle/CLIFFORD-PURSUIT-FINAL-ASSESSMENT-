@@ -39,4 +39,10 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationViewHolder> {
         return locationsList.size();
     }
 
+
+    public void setData(List<Locations> newLocationList) {
+        this.locationsList = newLocationList;
+        notifyDataSetChanged();
+    }
+
 }

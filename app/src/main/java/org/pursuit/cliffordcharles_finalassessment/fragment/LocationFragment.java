@@ -8,11 +8,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import org.pursuit.cliffordcharles_finalassessment.R;
@@ -34,10 +35,9 @@ import retrofit2.Retrofit;
 public class LocationFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private RecyclerView locationRecyclerView;
-    private SearchView searchView;
+    private android.support.v7.widget.SearchView searchView;
     private static final String TAG = "Connection status";
-    private LocationService locationService;
-    private Retrofit retrofit3;
+    private static final String TAG2 = "Searching for...";
     private LocationAdapter locationAdapter;
     private List<Locations> locationsArrayList = new ArrayList<>();
     private static final String ARG_PARAM1 = "param1";
@@ -69,7 +69,10 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        setupRetrofit();
+
+
+
+
     }
 
     @Override
@@ -93,6 +96,8 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }*/
+
+
     }
 
 
@@ -101,6 +106,11 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
         super.onViewCreated(view, savedInstanceState);
         setViews(view);
         setupRecyclerView();
+        setupRetrofit();
+        searchView.setOnQueryTextListener(this);
+
+
+
 
     }
 
@@ -111,14 +121,25 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(String s) {
         return false;
+
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(String s) {
+        Log.d(TAG2,s);
+        List<Locations> newLocationsList = new ArrayList<>();
+        for (Locations locations : locationsArrayList) {
+            if (locations.getName().toLowerCase().startsWith(s.toLowerCase())) {
+                newLocationsList. add(locations);
+            }
+        }
+
+        locationAdapter.setData(newLocationsList);
         return false;
     }
+
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
@@ -126,6 +147,7 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
 
     private void setViews(View v) {
         locationRecyclerView = v.findViewById(R.id.locations_recyclerview);
+        searchView = v.findViewById(R.id.search_view);
 
 
     }
@@ -151,6 +173,7 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
                         Collections.sort(locationsArrayList);
                         locationAdapter = new LocationAdapter(locationsArrayList);
                         locationRecyclerView.setAdapter(locationAdapter);
+
 
 
                     }
