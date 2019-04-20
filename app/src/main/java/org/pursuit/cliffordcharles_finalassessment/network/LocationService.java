@@ -10,6 +10,6 @@ import retrofit2.http.GET;
 
 public interface LocationService {
     @GET("/joinpursuit/Pursuit-Core-Android-Unit6-CTA-Bank-Locator/master/location.json")
-    Call <List<Locations> > getLocations();
+    Call <List <Locations> > getLocations();
 
 }

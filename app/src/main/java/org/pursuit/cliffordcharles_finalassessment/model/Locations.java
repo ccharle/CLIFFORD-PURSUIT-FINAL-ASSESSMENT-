@@ -8,7 +8,7 @@ import java.util.List;
         private String country;
         private String name;
         private Integer _id;
-        private CoordinatesResponse coord;
+        private Coordinates coord;
 
         public String getCountry() {
             return country;
@@ -22,11 +22,11 @@ import java.util.List;
             return _id;
         }
 
-        public CoordinatesResponse getCoord() {
+        public Coordinates getCoord() {
             return coord;
         }
 
-        public Locations(String country, String name, Integer _id, CoordinatesResponse coord) {
+        public Locations(String country, String name, Integer _id, Coordinates coord) {
             this.country = country;
             this.name = name;
             this._id = _id;
@@ -37,19 +37,19 @@ import java.util.List;
 
         public class Coordinates {
 
-            private Float lon;
-            private Float lat;
+            private String lon;
+            private String lat;
 
-            public Coordinates(Float lon, Float lat) {
+            public Coordinates(String lon, String lat) {
                 this.lon = lon;
                 this.lat = lat;
             }
 
-            public Float getLon() {
+            public String getLon() {
                 return lon;
             }
 
-            public Float getLat() {
+            public String getLat() {
                 return lat;
             }
         }
@@ -57,14 +57,14 @@ import java.util.List;
         public class CoordinatesResponse {
 
 
-            private ArrayList<Coordinates> coord;
+            private List <Coordinates> coord;
 
 
             public CoordinatesResponse(ArrayList<Coordinates> coord) {
                 this.coord = coord;
             }
 
-            public ArrayList<Coordinates> getCoord() {
+            public List<Coordinates> getCoordResponse() {
                 return coord;
             }
 
