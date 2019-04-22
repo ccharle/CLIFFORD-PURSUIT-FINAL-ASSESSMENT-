@@ -21,9 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.pursuit.cliffordcharles_finalassessment.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String ARG_PARAM1 = "param1";
@@ -31,7 +29,6 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
     private double lat;
     private double lon;
     private GoogleMap mMap;
-
 
     SupportMapFragment mapFragment;
 
@@ -42,6 +39,10 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public GoogleMapFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -56,65 +57,37 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public GoogleMapFragment() {
-        // Required empty public constructor
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment == null) {
 
-           FragmentManager fragmentManager = getFragmentManager();
-           FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-           mapFragment = SupportMapFragment.newInstance();
-           fragmentTransaction.replace(R.id.map, mapFragment).commit();
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            mapFragment = SupportMapFragment.newInstance();
+            fragmentTransaction.replace(R.id.map, mapFragment).commit();
             mapFragment = SupportMapFragment.newInstance();
 
-                mapFragment.getMapAsync(new OnMapReadyCallback() {
-                    @Override
-                    public void onMapReady(GoogleMap googleMap) {
-                        LatLng latLng = new LatLng(lat, lon);
-                        googleMap.addMarker(new MarkerOptions().position(latLng)
-                                .title("Singapore"));
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-
-
-                        UiSettings uiSettings = googleMap.getUiSettings();
-                        uiSettings.setZoomControlsEnabled(true);
-                        uiSettings.setMyLocationButtonEnabled(true);
-
-                   }
-               });
         }
         mapFragment.getMapAsync(this);
-       // getChildFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
         return rootView;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        // Add a marker in Sydney and move the camera
         mMap = googleMap;
-        LatLng sydney = new LatLng(lat, lon);
-        googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in "));
-       googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng getLocation = new LatLng(lat, lon);
+        googleMap.addMarker(new MarkerOptions().position(getLocation).title("The marker"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(getLocation));
 
 
         UiSettings uiSettings = googleMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
-        uiSettings.setMyLocationButtonEnabled(true);
+
     }
 
 }
-
-//        @Override
-////        public void onMapReady (GoogleMap googleMap){
-//
-//        }
-
