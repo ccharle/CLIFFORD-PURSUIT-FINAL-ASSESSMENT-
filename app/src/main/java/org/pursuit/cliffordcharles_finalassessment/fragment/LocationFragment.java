@@ -9,17 +9,17 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import org.pursuit.cliffordcharles_finalassessment.R;
 import org.pursuit.cliffordcharles_finalassessment.controller.LocationAdapter;
 import org.pursuit.cliffordcharles_finalassessment.model.Locations;
-import org.pursuit.cliffordcharles_finalassessment.network.LocationService;
 import org.pursuit.cliffordcharles_finalassessment.network.RetrofitSingleton;
 
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 
 public class LocationFragment extends Fragment implements SearchView.OnQueryTextListener {
@@ -44,10 +43,11 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
     private static final String ARG_PARAM2 = "param2";
 
 
+
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private OnLocationFragmentInteractionListener mListener;
 
     public LocationFragment() {
         // Required empty public constructor
@@ -71,8 +71,6 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
         }
 
 
-
-
     }
 
     @Override
@@ -81,21 +79,16 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
         return inflater.inflate(R.layout.fragment_location, container, false);
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnLocationFragmentInteractionListener) {
+            mListener = (OnLocationFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
+                    + " must implement OnLocationFragmentInteractionListener");
+        }
 
 
     }
@@ -108,8 +101,6 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
         setupRecyclerView();
         setupRetrofit();
         searchView.setOnQueryTextListener(this);
-
-
 
 
     }
@@ -128,11 +119,11 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
 
     @Override
     public boolean onQueryTextChange(String s) {
-        Log.d(TAG2,s);
+        Log.d(TAG2, s);
         List<Locations> newLocationsList = new ArrayList<>();
         for (Locations locations : locationsArrayList) {
             if (locations.getName().toLowerCase().startsWith(s.toLowerCase())) {
-                newLocationsList. add(locations);
+                newLocationsList.add(locations);
             }
         }
 
@@ -141,8 +132,8 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
     }
 
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
+    public interface OnLocationFragmentInteractionListener {
+        void onLocationFragmentInteraction(String Lat, String Lon);
     }
 
     private void setViews(View v) {
@@ -171,9 +162,8 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
                         Log.d(TAG, "OnResponse" + response.body().get(0).getCountry());
                         locationsArrayList.addAll(response.body());
                         Collections.sort(locationsArrayList);
-                        locationAdapter = new LocationAdapter(locationsArrayList);
+                        locationAdapter = new LocationAdapter(locationsArrayList,mListener);
                         locationRecyclerView.setAdapter(locationAdapter);
-
 
 
                     }

@@ -1,29 +1,16 @@
 package org.pursuit.cliffordcharles_finalassessment.view;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import org.pursuit.cliffordcharles_finalassessment.R;
-import org.pursuit.cliffordcharles_finalassessment.controller.LocationAdapter;
 import org.pursuit.cliffordcharles_finalassessment.fragment.LocationFragment;
-import org.pursuit.cliffordcharles_finalassessment.model.Locations;
-import org.pursuit.cliffordcharles_finalassessment.network.LocationService;
-import org.pursuit.cliffordcharles_finalassessment.network.RetrofitSingleton;
+import org.pursuit.cliffordcharles_finalassessment.fragment.GoogleMapFragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-
-public class MainActivity extends AppCompatActivity {
-
-
+public class MainActivity extends AppCompatActivity implements LocationFragment.OnLocationFragmentInteractionListener {
+    private static final String firstParam = "ParamOne";
+    private static final String secondParam = "ParamTwo";
 
 
     @Override
@@ -32,13 +19,32 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         LocationFragment locationFragment = new LocationFragment();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_container, locationFragment)
-                .commit();
+        swapFragment(locationFragment);
 
 
     }
 
 
+    @Override
+    public void onLocationFragmentInteraction(String lat, String lon) {
+//        Intent intent = new Intent(MainActivity.this, MapsFragment.class);
+//        intent.putExtra(firstParam, lat);
+//        intent.putExtra(secondParam, lon);
+//        startActivity(intent);
+        GoogleMapFragment googleMapFragment = GoogleMapFragment.newInstance(lat, lon);
+       swapFragment(googleMapFragment); getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, googleMapFragment)
+                .commit();
+
+    }
+
+    public void swapFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, fragment)
+                .addToBackStack("mainfragment")
+                .commit();
+
+    }
 }

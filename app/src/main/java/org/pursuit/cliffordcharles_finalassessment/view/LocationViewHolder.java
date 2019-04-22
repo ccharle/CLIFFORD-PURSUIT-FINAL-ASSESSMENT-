@@ -6,25 +6,39 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.pursuit.cliffordcharles_finalassessment.R;
+import org.pursuit.cliffordcharles_finalassessment.fragment.LocationFragment;
 import org.pursuit.cliffordcharles_finalassessment.model.Locations;
 
 public class LocationViewHolder extends RecyclerView.ViewHolder {
     private TextView countryTextView, nameTextView, _idTextView, longitudeTextView, latitudeTextView;
+    private LocationFragment.OnLocationFragmentInteractionListener mListener;
+    private String name;
+    private String country;
 
-    public LocationViewHolder(@NonNull View itemView) {
+    public LocationViewHolder(@NonNull final View itemView,LocationFragment.OnLocationFragmentInteractionListener onLocationFragmentInteractionListener) {
         super(itemView);
+        this.mListener = onLocationFragmentInteractionListener;
         setViews();
 
     }
 
-    public void onBind(Locations locations) {
-        String name = locations.getName();
-        String country = locations.getCountry();
+    public void onBind(final Locations locations) {
+        name = locations.getName();
+        country = locations.getCountry();
 
         countryTextView.setText(name + " , " + country);
      /*   _idTextView.setText((String.valueOf(locations.get_id())));
         latitudeTextView.setText(locations.getCoord().getLat());
         longitudeTextView.setText(locations.getCoord().getLon());*/
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               String curentLat =locations.getCoord().getLat();
+                String currentLon = locations.getCoord().getLon();
+                mListener.onLocationFragmentInteraction(curentLat,currentLon);
+
+            }
+        });
 
 
     }

@@ -7,24 +7,27 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.pursuit.cliffordcharles_finalassessment.R;
+import org.pursuit.cliffordcharles_finalassessment.fragment.LocationFragment;
 import org.pursuit.cliffordcharles_finalassessment.model.Locations;
 import org.pursuit.cliffordcharles_finalassessment.view.LocationViewHolder;
 
 import java.util.List;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationViewHolder> {
+    private LocationFragment.OnLocationFragmentInteractionListener locationFragmentInteractionListener;
 
     private List<Locations> locationsList;
 
-    public LocationAdapter(List<Locations> locationsList) {
+    public LocationAdapter(List<Locations> locationsList, LocationFragment.OnLocationFragmentInteractionListener onLocationFragmentInteractionListener) {
         this.locationsList = locationsList;
+        this.locationFragmentInteractionListener = onLocationFragmentInteractionListener;
     }
 
     @NonNull
     @Override
     public LocationViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View childView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.locations_itemview, viewGroup, false);
-        return new LocationViewHolder(childView);
+        return new LocationViewHolder(childView, locationFragmentInteractionListener);
     }
 
     @Override
