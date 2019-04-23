@@ -122,11 +122,7 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
     @Override
     public boolean onQueryTextChange(String s) {
         Log.d(TAG2, s);
-
-        if (locationsArrayList.get(0) == null) {
-            Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
-
-        } else {
+        {
             List<Locations> newLocationsList = new ArrayList<>();
             for (Locations locations : locationsArrayList) {
                 if (locations.getName().toLowerCase().startsWith(s.toLowerCase())) {
