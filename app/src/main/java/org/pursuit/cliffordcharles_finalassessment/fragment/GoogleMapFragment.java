@@ -28,7 +28,6 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
     private static final String ARG_PARAM2 = "param2";
     private double lat;
     private double lon;
-    private GoogleMap mMap;
 
     SupportMapFragment mapFragment;
 
@@ -79,7 +78,6 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        mMap = googleMap;
         LatLng getLocation = new LatLng(lat, lon);
         googleMap.addMarker(new MarkerOptions().position(getLocation).title("The marker"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(getLocation));
