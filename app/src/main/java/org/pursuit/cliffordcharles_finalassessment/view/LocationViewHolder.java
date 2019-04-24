@@ -27,9 +27,6 @@ public class LocationViewHolder extends RecyclerView.ViewHolder {
         country = locations.getCountry();
 
         countryTextView.setText(name + " , " + country);
-     /*   _idTextView.setText((String.valueOf(locations.get_id())));
-        latitudeTextView.setText(locations.getCoord().getLat());
-        longitudeTextView.setText(locations.getCoord().getLon());*/
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

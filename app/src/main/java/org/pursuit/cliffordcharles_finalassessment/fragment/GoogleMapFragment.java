@@ -2,6 +2,7 @@ package org.pursuit.cliffordcharles_finalassessment.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -61,6 +63,12 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment == null) {
 
@@ -72,15 +80,16 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
 
         }
         mapFragment.getMapAsync(this);
-        return rootView;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        LatLng coordinate = new LatLng(lat, lon);
         LatLng getLocation = new LatLng(lat, lon);
+        CameraUpdate center = CameraUpdateFactory.newLatLng(coordinate);
         googleMap.addMarker(new MarkerOptions().position(getLocation).title("The marker"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(getLocation));
+        googleMap.moveCamera(center);
 
 
         UiSettings uiSettings = googleMap.getUiSettings();

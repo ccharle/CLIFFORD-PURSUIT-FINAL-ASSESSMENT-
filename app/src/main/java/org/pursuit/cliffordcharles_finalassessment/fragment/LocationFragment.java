@@ -39,10 +39,12 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
     private android.support.v7.widget.SearchView searchView;
     private static final String TAG = "Connection status";
     private static final String TAG2 = "Searching for...";
+    private static final String SAVED_INSTANCE_KEY = "OnConfiguration Changed";
     private LocationAdapter locationAdapter;
     private List<Locations> locationsArrayList = null;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private String searchViewState;
     private ViewDialogue viewDialogue;
 
 
@@ -122,7 +124,10 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
     @Override
     public boolean onQueryTextChange(String s) {
         Log.d(TAG2, s);
-        {
+        if (locationsArrayList == null) {
+            Toast.makeText(getActivity(), "Please check internet connection", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
             List<Locations> newLocationsList = new ArrayList<>();
             for (Locations locations : locationsArrayList) {
                 if (locations.getName().toLowerCase().startsWith(s.toLowerCase())) {
@@ -170,11 +175,12 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
                             Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
 
 
-                        }
-                        viewDialogue = new ViewDialogue(getActivity());
-                        if (locationsArrayList == null) {
-                            locationsArrayList = new ArrayList<>();
-                            locationsArrayList.addAll(response.body());
+                        } else {
+                            viewDialogue = new ViewDialogue(getActivity());
+                            if (locationsArrayList == null) {
+                                locationsArrayList = new ArrayList<>();
+                                locationsArrayList.addAll(response.body());
+                            }
                         }
                         Collections.sort(locationsArrayList);
                         locationAdapter = new LocationAdapter(locationsArrayList, mListener);
@@ -197,13 +203,31 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
 
         viewDialogue.showDialogue();
 
-        final Handler handler = new Handler();
+        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 viewDialogue.hideDialogue();
             }
         }, 1000);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(SAVED_INSTANCE_KEY, searchViewState = searchView.getQuery().toString());
+        super.onSaveInstanceState(outState);
+
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_INSTANCE_KEY)) {
+            searchView.setQuery(searchViewState, true);
+        }
+
     }
 }
 

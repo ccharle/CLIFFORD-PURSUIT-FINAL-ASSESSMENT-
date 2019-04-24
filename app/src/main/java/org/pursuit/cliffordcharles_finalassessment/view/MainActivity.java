@@ -1,18 +1,20 @@
 package org.pursuit.cliffordcharles_finalassessment.view;
 
+import android.content.res.Configuration;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.util.Log;
 
 import org.pursuit.cliffordcharles_finalassessment.R;
 import org.pursuit.cliffordcharles_finalassessment.fragment.LocationFragment;
 import org.pursuit.cliffordcharles_finalassessment.fragment.GoogleMapFragment;
 
 public class MainActivity extends AppCompatActivity implements LocationFragment.OnLocationFragmentInteractionListener {
-    private static final String firstParam = "ParamOne";
-    private static final String secondParam = "ParamTwo";
+    Bundle newBundy = new Bundle();
     private ViewDialogue viewDialogue;
 
 
@@ -21,11 +23,10 @@ public class MainActivity extends AppCompatActivity implements LocationFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LocationFragment locationFragment = LocationFragment.newInstance(null, null);
+        LocationFragment locationFragment = new LocationFragment();
 
 
         swapFragment(locationFragment);
-
 
 
     }
@@ -33,10 +34,6 @@ public class MainActivity extends AppCompatActivity implements LocationFragment.
 
     @Override
     public void onLocationFragmentInteraction(String lat, String lon) {
-//        Intent intent = new Intent(MainActivity.this, MapsFragment.class);
-//        intent.putExtra(firstParam, lat);
-//        intent.putExtra(secondParam, lon);
-//        startActivity(intent);
         viewDialogue = new ViewDialogue(this);
         showCustomLoadingDialog();
         GoogleMapFragment googleMapFragment = GoogleMapFragment.newInstance(lat, lon);
@@ -71,5 +68,35 @@ public class MainActivity extends AppCompatActivity implements LocationFragment.
                 viewDialogue.hideDialogue();
             }
         }, 5000);
+
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            Log.d("Orientation", "Current Orientation : Landscape");
+
+
+        }
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBundle("newBundy", newBundy);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        savedInstanceState.getBundle("newBundy");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+
     }
 }
+
