@@ -46,7 +46,7 @@ public class ViewDialogue {
 
     }
 
-    public void hideDialogue(){
+    public void hideDialogue() {
 
         dialog.dismiss();
     }

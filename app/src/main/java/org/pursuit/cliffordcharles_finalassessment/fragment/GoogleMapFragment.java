@@ -43,7 +43,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public GoogleMapFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -86,11 +86,12 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         LatLng coordinate = new LatLng(lat, lon);
         LatLng getLocation = new LatLng(lat, lon);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(10);
         CameraUpdate center = CameraUpdateFactory.newLatLng(coordinate);
         googleMap.addMarker(new MarkerOptions().position(getLocation).title("The marker"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(getLocation));
         googleMap.moveCamera(center);
-
+        googleMap.moveCamera(zoom);
 
         UiSettings uiSettings = googleMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);

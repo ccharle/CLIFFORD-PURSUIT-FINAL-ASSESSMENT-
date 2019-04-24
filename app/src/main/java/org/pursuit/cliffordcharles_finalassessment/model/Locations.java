@@ -13,6 +13,28 @@ import java.util.List;
         private Integer _id;
         private Coordinates coord;
 
+        protected Locations(Parcel in) {
+            country = in.readString();
+            name = in.readString();
+            if (in.readByte() == 0) {
+                _id = null;
+            } else {
+                _id = in.readInt();
+            }
+        }
+
+        public static final Creator<Locations> CREATOR = new Creator<Locations>() {
+            @Override
+            public Locations createFromParcel(Parcel in) {
+                return new Locations(in);
+            }
+
+            @Override
+            public Locations[] newArray(int size) {
+                return new Locations[size];
+            }
+        };
+
         public String getCountry() {
             return country;
         }
@@ -52,6 +74,18 @@ import java.util.List;
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-
+            dest.writeString(country);
+            dest.writeString(name);
+            if (_id == null) {
+                dest.writeByte((byte) 0);
+            } else {
+                dest.writeByte((byte) 1);
+                dest.writeInt(_id);
+            }
         }
+
+//        private  List <Locations> locationsList( List<Locations> input,List<Locations>input2){
+//            int location =input.getName().toLowerCase().compareTo(.getName().toLowerCase());
+//
+
     }

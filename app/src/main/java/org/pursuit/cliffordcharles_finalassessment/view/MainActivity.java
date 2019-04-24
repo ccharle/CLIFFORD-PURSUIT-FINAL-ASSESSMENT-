@@ -1,20 +1,17 @@
 package org.pursuit.cliffordcharles_finalassessment.view;
 
 import android.content.res.Configuration;
-import android.graphics.drawable.GradientDrawable;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.pursuit.cliffordcharles_finalassessment.R;
 import org.pursuit.cliffordcharles_finalassessment.controller.LocationAdapter;
-import org.pursuit.cliffordcharles_finalassessment.fragment.LocationFragment;
 import org.pursuit.cliffordcharles_finalassessment.fragment.GoogleMapFragment;
+import org.pursuit.cliffordcharles_finalassessment.fragment.LocationFragment;
 import org.pursuit.cliffordcharles_finalassessment.model.Locations;
 import org.pursuit.cliffordcharles_finalassessment.network.RetrofitSingleton;
 
@@ -31,9 +28,7 @@ public class MainActivity extends AppCompatActivity implements LocationFragment.
     private ViewDialogue viewDialogue;
     private static final String TAG = "Connection status";
     private static final String BUNDLE_KEY = "Key to the Bundle";
-    private LocationAdapter locationAdapter;
     private List<Locations> locationsArrayList = null;
-
 
 
     @Override
@@ -55,11 +50,11 @@ public class MainActivity extends AppCompatActivity implements LocationFragment.
         GoogleMapFragment googleMapFragment = GoogleMapFragment.newInstance(lat, lon);
         getSupportFragmentManager()
                 .beginTransaction()
+                .addToBackStack("MapFragment")
                 .replace(R.id.main_container, googleMapFragment)
                 .commit();
 
     }
-
 
 
     @Override
@@ -152,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements LocationFragment.
             public void run() {
                 viewDialogue.hideDialogue();
             }
-        }, 1000);
+        }, 2000);
     }
 
 }

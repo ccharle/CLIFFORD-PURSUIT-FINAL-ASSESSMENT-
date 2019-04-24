@@ -10,12 +10,12 @@ import org.pursuit.cliffordcharles_finalassessment.fragment.LocationFragment;
 import org.pursuit.cliffordcharles_finalassessment.model.Locations;
 
 public class LocationViewHolder extends RecyclerView.ViewHolder {
-    private TextView countryTextView, nameTextView, _idTextView, longitudeTextView, latitudeTextView;
+    private TextView countryTextView;
     private LocationFragment.OnLocationFragmentInteractionListener mListener;
     private String name;
     private String country;
 
-    public LocationViewHolder(@NonNull final View itemView,LocationFragment.OnLocationFragmentInteractionListener onLocationFragmentInteractionListener) {
+    public LocationViewHolder(@NonNull final View itemView, LocationFragment.OnLocationFragmentInteractionListener onLocationFragmentInteractionListener) {
         super(itemView);
         this.mListener = onLocationFragmentInteractionListener;
         setViews();
@@ -30,9 +30,9 @@ public class LocationViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               String curentLat =locations.getCoord().getLat();
+                String currentLat = locations.getCoord().getLat();
                 String currentLon = locations.getCoord().getLon();
-                mListener.onLocationFragmentInteraction(curentLat,currentLon);
+                mListener.onLocationFragmentInteraction(currentLat, currentLon);
 
             }
         });
@@ -42,10 +42,6 @@ public class LocationViewHolder extends RecyclerView.ViewHolder {
 
     public void setViews() {
         countryTextView = itemView.findViewById(R.id.country_textview);
-        nameTextView = itemView.findViewById(R.id.name_textview);
-        _idTextView = itemView.findViewById(R.id._id_textview);
-        longitudeTextView = itemView.findViewById(R.id.longitude_textview);
-        latitudeTextView = itemView.findViewById(R.id.latitude_textview);
 
     }
 }
