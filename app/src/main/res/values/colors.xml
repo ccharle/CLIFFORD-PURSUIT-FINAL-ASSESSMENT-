@@ -3,4 +3,10 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="tea">#f3ffbd</color>
+    <color name="oceania">#b2dbbf</color>
+    <color name="lipstick">#ff1554</color>
+
+
+
 </resources>
