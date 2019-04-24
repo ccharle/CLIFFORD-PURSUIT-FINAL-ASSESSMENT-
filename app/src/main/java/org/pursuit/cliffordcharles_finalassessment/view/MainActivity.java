@@ -2,31 +2,47 @@ package org.pursuit.cliffordcharles_finalassessment.view;
 
 import android.content.res.Configuration;
 import android.graphics.drawable.GradientDrawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.pursuit.cliffordcharles_finalassessment.R;
+import org.pursuit.cliffordcharles_finalassessment.controller.LocationAdapter;
 import org.pursuit.cliffordcharles_finalassessment.fragment.LocationFragment;
 import org.pursuit.cliffordcharles_finalassessment.fragment.GoogleMapFragment;
+import org.pursuit.cliffordcharles_finalassessment.model.Locations;
+import org.pursuit.cliffordcharles_finalassessment.network.RetrofitSingleton;
 
-public class MainActivity extends AppCompatActivity implements LocationFragment.OnLocationFragmentInteractionListener {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MainActivity extends AppCompatActivity implements LocationFragment.OnLocationFragmentInteractionListener, LocationFragment.onRetrofitCall {
     Bundle newBundy = new Bundle();
     private ViewDialogue viewDialogue;
+    private static final String TAG = "Connection status";
+    private static final String BUNDLE_KEY = "Key to the Bundle";
+    private LocationAdapter locationAdapter;
+    private List<Locations> locationsArrayList = null;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        LocationFragment locationFragment = new LocationFragment();
-
-
-        swapFragment(locationFragment);
+        viewDialogue = new ViewDialogue(this);
+        showCustomLoadingDialog();
+        setupRetrofit();
 
 
     }
@@ -34,10 +50,9 @@ public class MainActivity extends AppCompatActivity implements LocationFragment.
 
     @Override
     public void onLocationFragmentInteraction(String lat, String lon) {
-        viewDialogue = new ViewDialogue(this);
+
         showCustomLoadingDialog();
         GoogleMapFragment googleMapFragment = GoogleMapFragment.newInstance(lat, lon);
-        swapFragment(googleMapFragment);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main_container, googleMapFragment)
@@ -45,42 +60,19 @@ public class MainActivity extends AppCompatActivity implements LocationFragment.
 
     }
 
-    public void swapFragment(Fragment fragment) {
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_container, fragment)
-                .addToBackStack("mainfragment")
-                .commit();
-    }
-
-    public void showCustomLoadingDialog() {
-
-        //..show gif
-        viewDialogue.showDialogue();
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //...here i'm waiting 5 seconds before hiding the custom dialog
-                //...you can do whenever you want or whenever your work is done
-                viewDialogue.hideDialogue();
-            }
-        }, 5000);
-
-    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Log.d("Orientation", "Current Orientation : Landscape");
 
 
         }
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -98,5 +90,70 @@ public class MainActivity extends AppCompatActivity implements LocationFragment.
         super.onSaveInstanceState(outState, outPersistentState);
 
     }
+
+    public void setupRetrofit() {
+
+        RetrofitSingleton.getInstance()
+                .getLocationService()
+                .getLocations()
+                .enqueue(new Callback<List<Locations>>() {
+                    @Override
+                    public void onResponse(Call<List<Locations>> call, Response<List<Locations>> response) {
+                        Log.d(TAG, "OnResponse" + response.body().get(0).getCountry());
+                        if (response.body() == null) {
+                            Toast.makeText(getApplicationContext(), "Connection Error", Toast.LENGTH_SHORT).show();
+
+
+                        } else {
+                            if (locationsArrayList == null) {
+                                locationsArrayList = new ArrayList<>();
+                                locationsArrayList.addAll(response.body());
+                            }
+                        }
+                        Collections.sort(locationsArrayList);
+                        onRetrofitCreation(locationsArrayList);
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Locations>> call, Throwable t) {
+                        Log.d(TAG, "OnFailure" + t.getMessage());
+                        Toast.makeText(getApplication(), "Connection Error", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+    }
+
+    @Override
+    public void onRetrofitCreation(List list) {
+
+        ArrayList<Locations> sortedList = new ArrayList<>(locationsArrayList.size());
+        sortedList.addAll(locationsArrayList);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(BUNDLE_KEY, sortedList);
+        LocationFragment locationFragment = new LocationFragment();
+        locationFragment.setArguments(bundle);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, locationFragment)
+                .commit();
+
+    }
+
+    public void showCustomLoadingDialog() {
+
+
+        viewDialogue.showDialogue();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                viewDialogue.hideDialogue();
+            }
+        }, 1000);
+    }
+
 }
 

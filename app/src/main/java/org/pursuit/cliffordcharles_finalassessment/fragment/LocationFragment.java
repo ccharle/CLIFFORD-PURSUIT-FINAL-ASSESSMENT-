@@ -37,15 +37,15 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
 
     private RecyclerView locationRecyclerView;
     private android.support.v7.widget.SearchView searchView;
-    private static final String TAG = "Connection status";
+
     private static final String TAG2 = "Searching for...";
     private static final String SAVED_INSTANCE_KEY = "OnConfiguration Changed";
-    private LocationAdapter locationAdapter;
-    private List<Locations> locationsArrayList = null;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String BUNDLE_KEY = "Key to the Bundle";
     private String searchViewState;
-    private ViewDialogue viewDialogue;
+    private List<Locations> locationsArrayList;
+    private LocationAdapter locationAdapter;
 
 
     private String mParam1;
@@ -72,6 +72,7 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            locationsArrayList = getArguments().getParcelableArrayList(BUNDLE_KEY);
         }
 
 
@@ -103,7 +104,6 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
         super.onViewCreated(view, savedInstanceState);
         setViews(view);
         setupRecyclerView();
-        setupRetrofit();
         searchView.setOnQueryTextListener(this);
 
 
@@ -147,6 +147,11 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
         void onLocationFragmentInteraction(String Lat, String Lon);
     }
 
+    public interface onRetrofitCall {
+        void onRetrofitCreation(List list);
+
+    }
+
     private void setViews(View v) {
         locationRecyclerView = v.findViewById(R.id.locations_recyclerview);
         searchView = v.findViewById(R.id.search_view);
@@ -155,62 +160,13 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
     }
 
     private void setupRecyclerView() {
-
         locationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        locationAdapter = new LocationAdapter(locationsArrayList, mListener);
+        locationRecyclerView.setAdapter(locationAdapter);
 
 
     }
 
-
-    public void setupRetrofit() {
-
-        RetrofitSingleton.getInstance()
-                .getLocationService()
-                .getLocations()
-                .enqueue(new Callback<List<Locations>>() {
-                    @Override
-                    public void onResponse(Call<List<Locations>> call, Response<List<Locations>> response) {
-                        Log.d(TAG, "OnResponse" + response.body().get(0).getCountry());
-                        if (response.body() == null) {
-                            Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
-
-
-                        } else {
-                            viewDialogue = new ViewDialogue(getActivity());
-                            if (locationsArrayList == null) {
-                                locationsArrayList = new ArrayList<>();
-                                locationsArrayList.addAll(response.body());
-                            }
-                        }
-                        Collections.sort(locationsArrayList);
-                        locationAdapter = new LocationAdapter(locationsArrayList, mListener);
-                        locationRecyclerView.setAdapter(locationAdapter);
-                        showCustomLoadingDialog();
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<Locations>> call, Throwable t) {
-                        Log.d(TAG, "OnFailure" + t.getMessage());
-                        Toast.makeText(getActivity(), "Connection Error", Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-    }
-
-    public void showCustomLoadingDialog() {
-
-
-        viewDialogue.showDialogue();
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                viewDialogue.hideDialogue();
-            }
-        }, 1000);
-    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -229,5 +185,6 @@ public class LocationFragment extends Fragment implements SearchView.OnQueryText
         }
 
     }
+
 }
 

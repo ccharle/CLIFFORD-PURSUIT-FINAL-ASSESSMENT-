@@ -1,9 +1,12 @@
 package org.pursuit.cliffordcharles_finalassessment.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-    public class Locations implements Comparable<Locations>{
+    public class Locations implements Comparable<Locations>, Parcelable {
 
         private String country;
         private String name;
@@ -42,8 +45,13 @@ import java.util.List;
         }
 
 
+        @Override
+        public int describeContents() {
+            return 0;
+        }
 
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
 
-
-
+        }
     }
